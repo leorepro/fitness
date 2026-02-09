@@ -292,6 +292,86 @@
     .insight-icon { font-size: 1.2em; min-width: 28px; text-align: center; }
     .insight-text { font-size: 0.9em; color: #475569; line-height: 1.6; }
 
+    /* Caution / Notes card */
+    .caution-card {
+      background: linear-gradient(135deg, rgba(245,158,11,0.08), rgba(239,68,68,0.06));
+      border: 1px solid rgba(245,158,11,0.35);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(245,158,11,0.08);
+      position: relative;
+      overflow: hidden;
+    }
+    .caution-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0;
+      width: 4px; height: 100%;
+      background: linear-gradient(180deg, #f59e0b, #ef4444);
+      border-radius: 4px 0 0 4px;
+    }
+    .caution-card .caution-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .caution-card .caution-header .caution-icon {
+      font-size: 1.5em;
+    }
+    .caution-card .caution-header h3 {
+      font-size: 1.15em;
+      font-weight: 700;
+      color: #b45309;
+      margin: 0;
+    }
+    .caution-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-bottom: 12px;
+      padding: 12px 16px;
+      background: rgba(255,255,255,0.6);
+      border-radius: 10px;
+      border: 1px solid rgba(245,158,11,0.2);
+    }
+    .caution-item:last-child { margin-bottom: 0; }
+    .caution-item .caution-bullet {
+      min-width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: rgba(245,158,11,0.15);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75em;
+      font-weight: 700;
+      color: #b45309;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .caution-item .caution-text {
+      font-size: 0.9em;
+      color: #475569;
+      line-height: 1.6;
+    }
+    .caution-item .caution-text strong {
+      color: #92400e;
+    }
+
+    /* Caution card responsive */
+    @media (max-width: 768px) {
+      .caution-card { padding: 16px 12px; border-radius: 12px; margin-bottom: 20px; }
+      .caution-card .caution-header h3 { font-size: 1em; }
+      .caution-item { padding: 10px 12px; border-radius: 8px; }
+      .caution-item .caution-text { font-size: 0.8em; line-height: 1.5; }
+    }
+    @media (max-width: 400px) {
+      .caution-card { padding: 12px 8px; }
+      .caution-item .caution-text { font-size: 0.75em; }
+    }
+
     .footer {
       text-align: center;
       padding: 16px;
@@ -573,9 +653,22 @@
         <div class="insight-icon">🌟</div>
         <div class="insight-text"><strong>動作多樣性豐富</strong> — 三個月內嘗試了 36 種不同動作，涵蓋背、胸、肩、腿、核心、手臂各肌群，訓練菜單持續擴展。</div>
       </div>
-      <div class="insight-item">
-        <div class="insight-icon">⚠️</div>
-        <div class="insight-text"><strong>注意事項</strong> — 左肩內旋問題在臥推時多次被提及，建議持續關注。握力在 Cable 下拉加重後成為限制因素，可考慮加入握力訓練。</div>
+    </div>
+
+    <!-- ══════════ SECTION: Caution / Notes ══════════ -->
+    <div class="section-title" style="border-left-color: #f59e0b;">⚠️ 注意事項</div>
+    <div class="caution-card">
+      <div class="caution-header">
+        <div class="caution-icon">🩺</div>
+        <h3>訓練安全與限制因素提醒</h3>
+      </div>
+      <div class="caution-item">
+        <div class="caution-bullet">1</div>
+        <div class="caution-text"><strong>左肩內旋問題</strong> — 在臥推時多次被提及，建議持續關注肩關節活動度，可加入肩外旋暖身及伸展動作，避免長期累積造成傷害。</div>
+      </div>
+      <div class="caution-item">
+        <div class="caution-bullet">2</div>
+        <div class="caution-text"><strong>握力成為限制因素</strong> — Cable 下拉加重至 32kg 後，握力不足影響訓練表現。可考慮加入農夫走路、握力器等握力專項訓練，或搭配拉力帶輔助。</div>
       </div>
     </div>
 
