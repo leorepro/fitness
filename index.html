@@ -1,0 +1,946 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>健身訓練報告 | 2025/11 - 2026/02</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&display=swap');
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      font-family: 'Noto Sans TC', -apple-system, BlinkMacSystemFont, sans-serif;
+      background: linear-gradient(135deg, #f0f4ff 0%, #e8f5e9 50%, #fff8e1 100%);
+      color: #1e293b;
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .container { max-width: 1200px; margin: 0 auto; overflow-x: hidden; }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 32px;
+      padding: 40px 24px;
+      background: linear-gradient(135deg, rgba(59,130,246,0.12), rgba(16,185,129,0.08), rgba(245,158,11,0.06));
+      border-radius: 20px;
+      border: 1px solid rgba(59,130,246,0.15);
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0 4px 24px rgba(59,130,246,0.08);
+    }
+    .header::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -50%;
+      width: 200%; height: 200%;
+      background: radial-gradient(circle at 30% 50%, rgba(59,130,246,0.06) 0%, transparent 50%);
+    }
+    .header h1 {
+      font-size: 2.2em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2563eb, #059669);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .header .subtitle {
+      font-size: 1em;
+      color: #64748b;
+      font-weight: 300;
+      position: relative;
+    }
+
+    /* Stats grid */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .stat-card {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(203,213,225,0.6);
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      backdrop-filter: blur(10px);
+      transition: transform 0.2s;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(0,0,0,0.08); }
+    .stat-number {
+      font-size: 2em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #2563eb, #7c3aed);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      line-height: 1.2;
+    }
+    .stat-label {
+      font-size: 0.85em;
+      color: #64748b;
+      margin-top: 4px;
+      font-weight: 400;
+    }
+
+    /* Section */
+    .section-title {
+      font-size: 1.3em;
+      font-weight: 600;
+      margin-bottom: 20px;
+      padding-left: 12px;
+      border-left: 3px solid #3b82f6;
+      color: #1e293b;
+    }
+
+    /* Chart grid */
+    .chart-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .chart-grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 20px;
+      margin-bottom: 32px;
+    }
+    .chart-card {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(203,213,225,0.6);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+      min-width: 0;
+      overflow: hidden;
+    }
+    .chart-card h3 {
+      font-size: 1.05em;
+      font-weight: 600;
+      margin-bottom: 4px;
+      color: #1e293b;
+    }
+    .chart-card .chart-subtitle {
+      font-size: 0.8em;
+      color: #64748b;
+      margin-bottom: 16px;
+    }
+    .chart-wrapper { position: relative; height: 220px; width: 100%; }
+    .chart-wrapper-sm { position: relative; height: 180px; width: 100%; }
+    .chart-wrapper-lg { position: relative; height: 260px; width: 100%; }
+
+    /* Legend */
+    .legend-row {
+      display: flex;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.78em;
+      color: #64748b;
+    }
+    .legend-dot {
+      width: 10px; height: 10px;
+      border-radius: 50%;
+    }
+    .legend-line {
+      width: 20px; height: 3px;
+      border-radius: 2px;
+    }
+
+    /* Progress cards */
+    .progress-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 32px;
+    }
+    .progress-card {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(203,213,225,0.6);
+      border-radius: 16px;
+      padding: 20px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .progress-card h4 {
+      font-size: 0.95em;
+      font-weight: 600;
+      color: #1e293b;
+      margin-bottom: 12px;
+    }
+    .progress-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .progress-from { font-size: 0.9em; color: #64748b; }
+    .progress-arrow { color: #059669; font-weight: bold; font-size: 1.1em; }
+    .progress-to { font-size: 0.9em; color: #059669; font-weight: 600; }
+    .progress-badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-size: 0.75em;
+      font-weight: 600;
+      background: rgba(5,150,105,0.1);
+      color: #059669;
+      border: 1px solid rgba(5,150,105,0.25);
+      margin-top: 4px;
+    }
+
+    /* Workout log */
+    .log-card {
+      background: rgba(255,255,255,0.85);
+      border: 1px solid rgba(203,213,225,0.6);
+      border-radius: 16px;
+      padding: 24px;
+      backdrop-filter: blur(10px);
+      margin-bottom: 32px;
+      overflow: hidden;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.04);
+    }
+    .workout-timeline {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .workout-entry {
+      display: flex;
+      gap: 16px;
+      padding: 16px;
+      background: rgba(241,245,249,0.7);
+      border-radius: 12px;
+      border-left: 3px solid #3b82f6;
+    }
+    .workout-date {
+      min-width: 70px;
+      font-weight: 700;
+      color: #2563eb;
+      font-size: 0.95em;
+      padding-top: 2px;
+    }
+    .workout-exercises {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+    .exercise-tag {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 8px;
+      font-size: 0.82em;
+      background: rgba(226,232,240,0.6);
+      color: #475569;
+      border: 1px solid rgba(203,213,225,0.7);
+    }
+    .exercise-tag.highlight {
+      background: rgba(5,150,105,0.1);
+      color: #047857;
+      border-color: rgba(5,150,105,0.3);
+      font-weight: 500;
+    }
+    .exercise-tag.new-exercise {
+      background: rgba(245,158,11,0.12);
+      color: #b45309;
+      border-color: rgba(245,158,11,0.35);
+      font-weight: 500;
+      position: relative;
+    }
+    .new-badge {
+      display: inline-block;
+      padding: 1px 5px;
+      border-radius: 4px;
+      font-size: 0.65em;
+      font-weight: 700;
+      background: linear-gradient(135deg, #f59e0b, #f97316);
+      color: white;
+      margin-left: 4px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+    }
+
+    /* Insights */
+    .insights-card {
+      background: linear-gradient(135deg, rgba(59,130,246,0.06), rgba(16,185,129,0.05), rgba(245,158,11,0.04));
+      border: 1px solid rgba(59,130,246,0.15);
+      border-radius: 16px;
+      padding: 24px;
+      margin-bottom: 32px;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.03);
+    }
+    .insight-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .insight-item:last-child { margin-bottom: 0; }
+    .insight-icon { font-size: 1.2em; min-width: 28px; text-align: center; }
+    .insight-text { font-size: 0.9em; color: #475569; line-height: 1.6; }
+
+    .footer {
+      text-align: center;
+      padding: 16px;
+      color: #94a3b8;
+      font-size: 0.8em;
+    }
+
+    /* ─── Tablet ─── */
+    @media (max-width: 1024px) {
+      .stats-grid { grid-template-columns: repeat(3, 1fr); }
+      .chart-grid-3 { grid-template-columns: 1fr 1fr; }
+      .chart-grid-3 .chart-card:last-child { grid-column: 1 / -1; max-width: 50%; justify-self: center; }
+    }
+
+    /* ─── Mobile ─── */
+    @media (max-width: 768px) {
+      body { padding: 14px 8px; overflow-x: hidden; }
+
+      .container { width: 100%; }
+
+      .header { padding: 24px 14px; border-radius: 14px; margin-bottom: 20px; }
+      .header h1 { font-size: 1.45em; }
+      .header .subtitle { font-size: 0.82em; }
+
+      .stats-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+        margin-bottom: 20px;
+      }
+      .stats-grid .stat-card:last-child {
+        grid-column: 1 / -1;
+        max-width: 60%;
+        justify-self: center;
+      }
+      .stat-card { padding: 12px 8px; border-radius: 12px; }
+      .stat-number { font-size: 1.5em; }
+      .stat-label { font-size: 0.75em; }
+
+      .section-title { font-size: 1.05em; margin-bottom: 12px; padding-left: 10px; }
+
+      .chart-grid {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .chart-grid-3 {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        margin-bottom: 20px;
+      }
+      .chart-grid-3 .chart-card:last-child { max-width: 100%; grid-column: auto; }
+      .chart-card {
+        padding: 14px 10px;
+        border-radius: 12px;
+        max-width: 100%;
+      }
+      .chart-card h3 { font-size: 0.9em; }
+      .chart-card .chart-subtitle { font-size: 0.72em; margin-bottom: 10px; }
+      .chart-wrapper { height: 190px; }
+      .chart-wrapper-sm { height: 160px; }
+
+      .legend-row { gap: 10px; margin-bottom: 6px; }
+      .legend-item { font-size: 0.68em; gap: 4px; }
+      .legend-dot { width: 8px; height: 8px; }
+      .legend-line { width: 16px; height: 2px; }
+
+      .progress-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 20px; }
+      .progress-card { padding: 14px 12px; border-radius: 12px; }
+      .progress-card h4 { font-size: 0.88em; margin-bottom: 8px; }
+      .progress-row { flex-wrap: wrap; gap: 4px; }
+      .progress-from, .progress-to { font-size: 0.8em; }
+      .progress-badge { font-size: 0.7em; }
+
+      .insights-card { padding: 16px 12px; border-radius: 12px; margin-bottom: 20px; }
+      .insight-icon { font-size: 1em; min-width: 24px; }
+      .insight-text { font-size: 0.8em; line-height: 1.5; }
+
+      .log-card { padding: 12px 8px; border-radius: 12px; }
+      .workout-timeline { gap: 10px; }
+      .workout-entry {
+        flex-direction: column;
+        gap: 6px;
+        padding: 10px;
+        border-radius: 10px;
+      }
+      .workout-date { min-width: unset; font-size: 0.88em; }
+      .workout-exercises { gap: 5px; }
+      .exercise-tag { font-size: 0.72em; padding: 3px 7px; border-radius: 6px; }
+      .new-badge { font-size: 0.55em; padding: 1px 3px; margin-left: 2px; }
+    }
+
+    /* ─── Small Mobile ─── */
+    @media (max-width: 400px) {
+      body { padding: 8px 4px; }
+      .header { padding: 18px 10px; border-radius: 12px; }
+      .header h1 { font-size: 1.25em; }
+      .header .subtitle { font-size: 0.75em; }
+      .stats-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; }
+      .stats-grid .stat-card:last-child { max-width: 100%; }
+      .stat-card { padding: 10px 6px; border-radius: 10px; }
+      .stat-number { font-size: 1.3em; }
+      .stat-label { font-size: 0.7em; }
+      .chart-card { padding: 10px 8px; border-radius: 10px; }
+      .chart-card h3 { font-size: 0.85em; }
+      .chart-wrapper { height: 170px; }
+      .chart-wrapper-sm { height: 140px; }
+      .exercise-tag { font-size: 0.68em; padding: 2px 5px; }
+      .insight-text { font-size: 0.75em; }
+      .progress-from, .progress-to { font-size: 0.75em; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header -->
+    <div class="header">
+      <h1>健身訓練報告</h1>
+      <div class="subtitle">2025 年 11 月 — 2026 年 2 月｜持續進步中</div>
+    </div>
+
+    <!-- Stats Overview -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-number">14</div>
+        <div class="stat-label">總訓練次數</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">96</div>
+        <div class="stat-label">訓練天數跨度</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number">1.0</div>
+        <div class="stat-label">平均每週訓練</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="background: linear-gradient(135deg,#f59e0b,#f97316);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">36</div>
+        <div class="stat-label">不同動作項目</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-number" style="background: linear-gradient(135deg,#059669,#047857);-webkit-background-clip:text;-webkit-text-fill-color:transparent;">12+</div>
+        <div class="stat-label">有進步紀錄</div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION: Core Exercise Trends ══════════ -->
+    <div class="section-title">核心動作趨勢（3 次以上紀錄）</div>
+
+    <div class="chart-grid">
+      <div class="chart-card">
+        <h3>Cable 下拉（Lat Pulldown）</h3>
+        <div class="chart-subtitle">重量穩定後成功加重至 32kg</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>重量 (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>次數</div>
+          <div class="legend-item"><div class="legend-line" style="background:#f59e0b"></div>訓練量</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart-pulldown"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <h3>Cable 坐姿划船（Seated Row）</h3>
+        <div class="chart-subtitle">重量從 18→32kg，次數穩定提升</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>重量 (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>次數</div>
+          <div class="legend-item"><div class="legend-line" style="background:#f59e0b"></div>訓練量</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart-row"></canvas></div>
+      </div>
+
+      <div class="chart-card">
+        <h3>槓鈴臥推（Barbell Bench Press）</h3>
+        <div class="chart-subtitle">從 20kg 進步到 30kg，成長顯著</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>重量 (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>次數</div>
+          <div class="legend-item"><div class="legend-line" style="background:#f59e0b"></div>訓練量</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart-bench"></canvas></div>
+      </div>
+
+      <!-- Volume per session -->
+      <div class="chart-card">
+        <h3>每次訓練總量（Volume）</h3>
+        <div class="chart-subtitle">加總每次訓練所有動作的重量 × 次數</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#8b5cf6"></div>總訓練量 (kg)</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart-volume"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION: Other Exercise Trends ══════════ -->
+    <div class="section-title">其他動作進步趨勢（2 次紀錄）</div>
+
+    <div class="chart-grid-3">
+      <div class="chart-card">
+        <h3>槓鈴俯身划船</h3>
+        <div class="chart-subtitle">重量 +25%</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>重量 (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>次數</div>
+        </div>
+        <div class="chart-wrapper-sm"><canvas id="chart-bentrow"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>啞鈴肩推（單邊）</h3>
+        <div class="chart-subtitle">重量 +12%</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>重量 (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>次數</div>
+        </div>
+        <div class="chart-wrapper-sm"><canvas id="chart-dbpress"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <h3>槓鈴站姿肩推</h3>
+        <div class="chart-subtitle">同重量下次數提升</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>重量 (kg)</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#10b981"></div>次數</div>
+        </div>
+        <div class="chart-wrapper-sm"><canvas id="chart-ohp"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION: Training Overview ══════════ -->
+    <div class="section-title">訓練總覽分析</div>
+
+    <div class="chart-grid">
+      <!-- Monthly Frequency -->
+      <div class="chart-card">
+        <h3>每月訓練頻率</h3>
+        <div class="chart-subtitle">12 月訓練密度最高</div>
+        <div class="chart-wrapper"><canvas id="chart-frequency"></canvas></div>
+      </div>
+
+      <!-- Muscle Group -->
+      <div class="chart-card">
+        <h3>肌群訓練分佈</h3>
+        <div class="chart-subtitle">以動作出現次數統計（背部訓練佔比最高）</div>
+        <div class="chart-wrapper"><canvas id="chart-muscle"></canvas></div>
+      </div>
+
+      <!-- New exercises per session -->
+      <div class="chart-card">
+        <h3>每次訓練新動作數量</h3>
+        <div class="chart-subtitle">持續嘗試新動作，擴展訓練菜單</div>
+        <div class="legend-row">
+          <div class="legend-item"><div class="legend-dot" style="background:#f59e0b"></div>新動作數</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e2e8f0"></div>既有動作數</div>
+        </div>
+        <div class="chart-wrapper"><canvas id="chart-newex"></canvas></div>
+      </div>
+
+      <!-- Exercise count per session -->
+      <div class="chart-card">
+        <h3>每次訓練動作數</h3>
+        <div class="chart-subtitle">含暖身與核心動作</div>
+        <div class="chart-wrapper"><canvas id="chart-excount"></canvas></div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION: Insights ══════════ -->
+    <div class="section-title">訓練觀察與建議</div>
+    <div class="insights-card">
+      <div class="insight-item">
+        <div class="insight-icon">📈</div>
+        <div class="insight-text"><strong>臥推成長最明顯</strong> — 從 20kg×10 進步至 30kg×8，預估 1RM 從約 27kg 成長到 38kg（+41%），是三個月來進步幅度最大的動作。</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">🔄</div>
+        <div class="insight-text"><strong>Cable 下拉成功加重</strong> — 在 25kg 達到 15 次後加重至 32kg，雖然次數降到 5，但預估 1RM 維持穩定（約 37kg），屬於正常的重量適應期。</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">💪</div>
+        <div class="insight-text"><strong>坐姿划船穩定進步</strong> — 在 32kg 的重量下，次數從 8 穩步提升到 10，訓練量穩定成長，是最穩定進步的動作。</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">🌟</div>
+        <div class="insight-text"><strong>動作多樣性豐富</strong> — 三個月內嘗試了 36 種不同動作，涵蓋背、胸、肩、腿、核心、手臂各肌群，訓練菜單持續擴展。</div>
+      </div>
+      <div class="insight-item">
+        <div class="insight-icon">⚠️</div>
+        <div class="insight-text"><strong>注意事項</strong> — 左肩內旋問題在臥推時多次被提及，建議持續關注。握力在 Cable 下拉加重後成為限制因素，可考慮加入握力訓練。</div>
+      </div>
+    </div>
+
+    <!-- ══════════ SECTION: Full Workout Log ══════════ -->
+    <div class="section-title">完整訓練紀錄</div>
+    <p style="font-size:0.82em;color:#64748b;margin:-12px 0 16px 16px;">
+      <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(5,150,105,0.15);border:1px solid rgba(5,150,105,0.3);vertical-align:middle;margin-right:4px;"></span> 有進步
+      &nbsp;&nbsp;
+      <span style="display:inline-block;width:10px;height:10px;border-radius:3px;background:rgba(245,158,11,0.15);border:1px solid rgba(245,158,11,0.35);vertical-align:middle;margin-right:4px;"></span> 首次出現的新動作
+    </p>
+    <div class="log-card">
+      <div class="workout-timeline">
+
+        <div class="workout-entry">
+          <div class="workout-date">11/6</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag new-exercise">Cable下拉 25×12<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">Cable坐姿划船 18×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">Pushups 20下<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">單腳橋式 10下<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">四足跪姿手腳延伸 10<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">側棒式 45s<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">11/18</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag">動態伸展</span>
+            <span class="exercise-tag">四足跪姿核心啟動</span>
+            <span class="exercise-tag new-exercise">啞鈴RDL 4.5×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴划船 9×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴坐姿肩推 9×8<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴反飛鳥 2×15<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">11/24</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag">動態伸展</span>
+            <span class="exercise-tag">側棒式 30s</span>
+            <span class="exercise-tag highlight">Cable下拉 25×14 ↑</span>
+            <span class="exercise-tag new-exercise">槓鈴RDL 20×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">槓鈴俯身划船 20×15<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">12/1</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag new-exercise">槓鈴臥推 20×10<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴二頭彎舉 4.5×10<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴Snatch 4.5×12<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">12/9</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag highlight">槓鈴臥推 25×8 ↑</span>
+            <span class="exercise-tag new-exercise">單槓抬膝 15下<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">槓鈴上胸 20×8<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">槓鈴划船 25×8<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag">Cable坐姿划船 32×8</span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">12/15</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag new-exercise">啞鈴肩推(單邊) 6.7×12<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag highlight">Cable下拉 25×15 ↑</span>
+            <span class="exercise-tag new-exercise">槓鈴RDL+划船 20×10<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">12/22</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag highlight">槓鈴臥推 25×10 ↑</span>
+            <span class="exercise-tag highlight">槓鈴俯身划船 25×12 ↑</span>
+            <span class="exercise-tag highlight">Cable下拉 25×15 ↑</span>
+            <span class="exercise-tag new-exercise">分腿蹲 2趟<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">12/29</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag new-exercise">引體向上離心 5下<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">槓片高腳杯深蹲 10×12<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag highlight">Cable坐姿划船 32×9 ↑</span>
+            <span class="exercise-tag new-exercise">槓鈴站姿肩推 25×5<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">1/12</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag">Cable坐姿划船 32×9</span>
+            <span class="exercise-tag">Cable下拉 32×5（加重）</span>
+            <span class="exercise-tag highlight">槓鈴臥推 25×12 ↑</span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">1/19</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag highlight">Cable坐姿划船 32×10 ↑</span>
+            <span class="exercise-tag highlight">槓鈴臥推 30×8 ↑</span>
+            <span class="exercise-tag new-exercise">槓片單臂划船 10×10<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴抓舉(單邊) 6.5×15<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">1/26</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag new-exercise">Cable臉拉 15×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">Cable划船 30×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">Cable胸推(單邊) 15×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">Cable三頭 15×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">Cable二頭直把 15×15<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">2/2</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag highlight">啞鈴肩推(單邊) 7.5×12 ↑</span>
+            <span class="exercise-tag new-exercise">啞鈴臥推(單邊) 10×10<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">啞鈴反飛鳥(趴bench) 5×15<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag new-exercise">下腹抬腿 15下<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+        <div class="workout-entry">
+          <div class="workout-date">2/9</div>
+          <div class="workout-exercises">
+            <span class="exercise-tag new-exercise">啞鈴俯身划船(單邊) 12.5×10<span class="new-badge">NEW</span></span>
+            <span class="exercise-tag highlight">槓鈴站姿肩推 25×6 ↑</span>
+            <span class="exercise-tag new-exercise">藥球Wall Ball 4×15<span class="new-badge">NEW</span></span>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div class="footer">
+      Leo 的健身訓練紀錄｜生成日期：2026/02/09
+    </div>
+  </div>
+
+  <!-- ══════════ SCRIPTS ══════════ -->
+  <script>
+    Chart.defaults.color = '#64748b';
+    Chart.defaults.borderColor = 'rgba(203,213,225,0.5)';
+    Chart.defaults.font.family = "'Noto Sans TC', sans-serif";
+    Chart.defaults.font.size = 11;
+
+    const tt = {
+      backgroundColor: 'rgba(255,255,255,0.97)',
+      titleColor: '#1e293b',
+      bodyColor: '#475569',
+      borderColor: 'rgba(203,213,225,0.8)',
+      borderWidth: 1,
+      cornerRadius: 8,
+      padding: 12,
+    };
+    const grd = { color: 'rgba(203,213,225,0.5)' };
+
+    /* ─── Helper: dual-axis bar+line chart ─── */
+    function dualChart(id, labels, weights, reps, yMax, y1Max, volMax) {
+      const vols = weights.map((w,i) => w * reps[i]);
+      new Chart(document.getElementById(id), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label:'重量 (kg)', data:weights, backgroundColor:'rgba(59,130,246,0.7)', borderColor:'#3b82f6', borderWidth:1, borderRadius:4, yAxisID:'y', order:2 },
+            { label:'次數', data:reps, backgroundColor:'rgba(16,185,129,0.7)', borderColor:'#10b981', borderWidth:1, borderRadius:4, yAxisID:'y1', order:2 },
+            { label:'訓練量', data:vols, type:'line', borderColor:'#f59e0b', backgroundColor:'rgba(245,158,11,0.08)', borderWidth:2.5, pointBackgroundColor:'#f59e0b', pointBorderColor:'#fff', pointBorderWidth:2, pointRadius:4, tension:0.3, fill:true, yAxisID:'y2', order:1 }
+          ]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins:{ legend:{display:false}, tooltip:{...tt, callbacks:{ afterBody(items){ const i=items[0].dataIndex; return '訓練量: '+vols[i]; }}} },
+          scales:{
+            y:{ position:'left', title:{display:true,text:'重量 (kg)',color:'#2563eb'}, grid:grd, min:0, max:yMax },
+            y1:{ position:'right', title:{display:true,text:'次數',color:'#059669'}, grid:{display:false}, min:0, max:y1Max },
+            y2:{ display:false, min:0, max:volMax },
+            x:{ grid:{display:false} }
+          }
+        }
+      });
+    }
+
+    /* ─── Core charts ─── */
+    dualChart('chart-pulldown', ['11/6','11/24','12/15','12/22','1/12'], [25,25,25,25,32], [12,14,15,15,5], 40, 20, 500);
+    dualChart('chart-row',      ['11/6','12/9','12/29','1/12','1/19'], [18,32,32,32,32], [15,8,9,9,10], 40, 20, 400);
+    dualChart('chart-bench',    ['12/1','12/9','12/22','1/12','1/19'], [20,25,25,25,30], [10,8,10,12,8], 40, 16, 400);
+
+    /* ─── Volume per session ─── */
+    new Chart(document.getElementById('chart-volume'), {
+      type: 'bar',
+      data: {
+        labels: ['11/6','11/18','11/24','12/1','12/9','12/15','12/22','12/29','1/12','1/19','1/26','2/2','2/9'],
+        datasets: [{
+          label: '總訓練量 (kg)',
+          data: [570, 305, 950, 299, 816, 655, 925, 533, 748, 758, 1350, 265, 335],
+          backgroundColor: function(ctx) {
+            const v = ctx.raw;
+            if (v >= 900) return 'rgba(139,92,246,0.85)';
+            if (v >= 600) return 'rgba(139,92,246,0.65)';
+            return 'rgba(139,92,246,0.45)';
+          },
+          borderColor: '#8b5cf6',
+          borderWidth: 1,
+          borderRadius: 4,
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:tt },
+        scales:{
+          y:{ beginAtZero:true, title:{display:true,text:'訓練量 (kg×次)',color:'#7c3aed'}, grid:grd },
+          x:{ grid:{display:false}, ticks:{maxRotation:45} }
+        }
+      }
+    });
+
+    /* ─── Small comparison charts (dual Y-axis) ─── */
+    function compareChart(id, labels, weights, reps, wMax, rMax) {
+      const vols = weights.map((w,i) => w * reps[i]);
+      new Chart(document.getElementById(id), {
+        type: 'bar',
+        data: {
+          labels,
+          datasets: [
+            { label:'重量 (kg)', data:weights, backgroundColor:'rgba(59,130,246,0.7)', borderColor:'#3b82f6', borderWidth:1, borderRadius:6, barThickness:28, yAxisID:'y' },
+            { label:'次數', data:reps, backgroundColor:'rgba(16,185,129,0.7)', borderColor:'#10b981', borderWidth:1, borderRadius:6, barThickness:28, yAxisID:'y1' }
+          ]
+        },
+        options: {
+          responsive:true, maintainAspectRatio:false,
+          plugins:{
+            legend:{display:false},
+            tooltip:{...tt, callbacks:{afterBody(items){const i=items[0].dataIndex;return '訓練量: '+vols[i];}}}
+          },
+          scales:{
+            y:{ position:'left', title:{display:true,text:'重量 (kg)',color:'#2563eb',font:{size:10}}, grid:grd, min:0, max:wMax },
+            y1:{ position:'right', title:{display:true,text:'次數',color:'#059669',font:{size:10}}, grid:{display:false}, min:0, max:rMax },
+            x:{ grid:{display:false} }
+          }
+        }
+      });
+    }
+
+    compareChart('chart-bentrow', ['11/24','12/22'], [20,25], [15,12], 30, 20);
+    compareChart('chart-dbpress', ['12/15','2/2'],   [6.7,7.5], [12,12], 10, 16);
+    compareChart('chart-ohp',     ['12/29','2/9'],   [25,25], [5,6], 30, 8);
+
+    /* ─── Monthly frequency ─── */
+    new Chart(document.getElementById('chart-frequency'), {
+      type: 'bar',
+      data: {
+        labels: ['11月','12月','1月','2月'],
+        datasets: [{
+          label: '訓練次數',
+          data: [3,5,3,2],
+          backgroundColor: ['rgba(59,130,246,0.55)','rgba(59,130,246,0.8)','rgba(59,130,246,0.55)','rgba(59,130,246,0.4)'],
+          borderColor: '#3b82f6',
+          borderWidth: 1,
+          borderRadius: 8,
+          barThickness: 48,
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:tt },
+        scales:{
+          y:{ beginAtZero:true, max:7, title:{display:true,text:'次數',color:'#2563eb'}, grid:grd, ticks:{stepSize:1} },
+          x:{ grid:{display:false} }
+        }
+      }
+    });
+
+    /* ─── Muscle group distribution (doughnut) ─── */
+    new Chart(document.getElementById('chart-muscle'), {
+      type: 'doughnut',
+      data: {
+        labels: ['背部','胸部','肩部','腿部','核心','手臂','全身/爆發'],
+        datasets: [{
+          data: [19, 8, 8, 6, 6, 3, 3],
+          backgroundColor: [
+            'rgba(59,130,246,0.75)',
+            'rgba(239,68,68,0.7)',
+            'rgba(245,158,11,0.7)',
+            'rgba(16,185,129,0.7)',
+            'rgba(139,92,246,0.7)',
+            'rgba(236,72,153,0.65)',
+            'rgba(107,114,128,0.55)',
+          ],
+          borderColor: '#fff',
+          borderWidth: 2,
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{
+          legend:{ position:'right', labels:{ padding:12, usePointStyle:true, pointStyle:'circle', font:{size:11} } },
+          tooltip:{ ...tt, callbacks:{ label(ctx){ const t=ctx.dataset.data.reduce((a,b)=>a+b,0); return ctx.label+': '+ctx.raw+'次 ('+Math.round(ctx.raw/t*100)+'%)'; } } }
+        }
+      }
+    });
+
+    /* ─── New exercises per session ─── */
+    new Chart(document.getElementById('chart-newex'), {
+      type: 'bar',
+      data: {
+        labels: ['11/6','11/18','11/24','12/1','12/9','12/15','12/22','12/29','1/12','1/19','1/26','2/2','2/9'],
+        datasets: [
+          { label:'新動作', data:[6,4,2,3,3,2,1,3,0,2,5,3,2], backgroundColor:'rgba(245,158,11,0.7)', borderColor:'#f59e0b', borderWidth:1, borderRadius:4 },
+          { label:'既有動作', data:[0,2,3,0,2,1,3,1,3,2,0,1,1], backgroundColor:'rgba(203,213,225,0.5)', borderColor:'#cbd5e1', borderWidth:1, borderRadius:4 }
+        ]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:tt },
+        scales:{
+          y:{ beginAtZero:true, stacked:true, title:{display:true,text:'動作數',color:'#b45309'}, grid:grd, ticks:{stepSize:1} },
+          x:{ stacked:true, grid:{display:false}, ticks:{maxRotation:45} }
+        }
+      }
+    });
+
+    /* ─── Exercise count per session ─── */
+    new Chart(document.getElementById('chart-excount'), {
+      type: 'line',
+      data: {
+        labels: ['11/6','11/18','11/24','12/1','12/9','12/15','12/22','12/29','1/12','1/19','1/26','2/2','2/9'],
+        datasets: [{
+          label: '動作數',
+          data: [6,6,5,3,5,3,4,4,3,4,5,4,3],
+          borderColor: '#3b82f6',
+          backgroundColor: 'rgba(59,130,246,0.08)',
+          borderWidth: 2.5,
+          pointBackgroundColor: '#3b82f6',
+          pointBorderColor: '#fff',
+          pointBorderWidth: 2,
+          pointRadius: 5,
+          tension: 0.3,
+          fill: true,
+        }]
+      },
+      options: {
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false}, tooltip:tt },
+        scales:{
+          y:{ beginAtZero:true, max:8, title:{display:true,text:'動作數',color:'#2563eb'}, grid:grd, ticks:{stepSize:1} },
+          x:{ grid:{display:false}, ticks:{maxRotation:45} }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
